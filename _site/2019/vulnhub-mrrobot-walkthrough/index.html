@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  
+
+  <title>Vulnhub: Mr Robot - Walkthrough</title>
+  <meta name="description" content="This might officially be the first box that i’ve ever attempted. I was a total pleb at the time and it took me hella long to figure it all out. In the end it was all worth it :)
+
+">
+  <meta name="author" content="Jiebs">
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Vulnhub: Mr Robot - Walkthrough">
+  <meta name="twitter:description" content="This might officially be the first box that i’ve ever attempted. I was a total pleb at the time and it took me hella long to figure it all out. In the end it was all worth it :)
+
+">
+  
+  <meta name="twitter:creator" content="jiebss">
+  
+  <meta name="twitter:image" content="/images/favicons/favicon-194x194.png" />
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Vulnhub: Mr Robot - Walkthrough">
+  <meta property="og:description" content="This might officially be the first box that i’ve ever attempted. I was a total pleb at the time and it took me hella long to figure it all out. In the end it was all worth it :)
+
+">
+  <meta property="og:image" content="/images/favicons/favicon-194x194.png" />
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-touch-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-touch-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-touch-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-touch-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/images/favicons/apple-touch-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/images/favicons/apple-touch-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/images/favicons/apple-touch-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/images/favicons/apple-touch-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicons/apple-touch-icon-180x180.png">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-32x32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-194x194.png" sizes="194x194">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-96x96.png" sizes="96x96">
+  <link rel="icon" type="image/png" href="/images/favicons/android-chrome-192x192.png" sizes="192x192">
+  <link rel="icon" type="image/png" href="/images/favicons/favicon-16x16.png" sizes="16x16">
+  <link rel="manifest" href="/images/favicons/manifest.json">
+  <link rel="shortcut icon" href="/images/favicons/favicon.ico">
+  <meta name="msapplication-TileColor" content="#ffc40d">
+  <meta name="msapplication-TileImage" content="/images/favicons/mstile-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  
+  <link rel="stylesheet" href="/css/main.css?1578336926736764985">
+  <link rel="canonical" href="http://localhost:4000/2019/vulnhub-mrrobot-walkthrough/">
+  <link rel="alternate" type="application/rss+xml" title="JiebsSecurity" href="/feed.xml">
+</head>
+
+
+  <body>
+    <span class="mobile btn-mobile-menu">
+  <i class="icon icon-list btn-mobile-menu__icon"></i>
+  <i class="icon icon-x-circle btn-mobile-close__icon hidden"></i>
+</span>
+
+<header class="panel-cover" style="background-image: url(/images/cover.jpg)">
+  <div class="panel-main">
+
+    <div class="panel-main__inner panel-inverted">
+    <div class="panel-main__content">
+        <a href="/" title="link to home of JiebsSecurity">
+          <img src="/images/profile.jpg" class="user-image" alt="My Profile Photo">
+          <h1 class="panel-cover__title panel-title">JiebsSecurity</h1>
+        </a>
+        <hr class="panel-cover__divider">
+        <p class="panel-cover__description">Life long student with a passion towards cyber security.</p>
+        <hr class="panel-cover__divider panel-cover__divider--secondary">
+
+        <div class="navigation-wrapper">
+
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+              <li class="navigation__item"><a href="/#blog" title="link to JiebsSecurity blog" class="blog-button">Blog</a></li>
+            </ul>
+          </nav>
+
+          <nav class="cover-navigation navigation--social">
+            <ul class="navigation">
+
+            
+              <!-- Twitter -->
+              <li class="navigation__item">
+                <a href="http://twitter.com/jiebss" title="@jiebss on Twitter" target="_blank">
+                  <i class="icon icon-social-twitter"></i>
+                  <span class="label">Twitter</span>
+                </a>
+              </li>
+            
+
+            
+
+            
+              <!-- LinkedIn -->
+              <li class="navigation__item">
+                <a href="https://www.linkedin.com/in/job-schellekens" title="job-schellekens on LinkedIn" target="_blank">
+                  <i class="icon icon-social-linkedin"></i>
+                  <span class="label">LinkedIn</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- GitHub -->
+              <li class="navigation__item">
+                <a href="https://www.github.com/jiebss" title="jiebss on GitHub" target="_blank">
+                  <i class="icon icon-social-github"></i>
+                  <span class="label">GitHub</span>
+                </a>
+              </li>
+            
+
+            
+              <!-- Email -->
+              <li class="navigation__item">
+                <a href="mailto:jiebs@protonmail.com" title="Email jiebs@protonmail.com" target="_blank">
+                  <i class="icon icon-mail"></i>
+                  <span class="label">Email</span>
+                </a>
+              </li>
+            
+
+            <!-- RSS -->
+            <li class="navigation__item">
+              <a href="/feed.xml" title="Subscribe" target="_blank">
+                <i class="icon icon-rss"></i>
+                <span class="label">RSS</span>
+              </a>
+            </li>
+
+            </ul>
+          </nav>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+
+
+    <div class="content-wrapper">
+      <div class="content-wrapper__inner">
+        <article class="post-container post-container--single">
+  <header class="post-header">
+    <div class="post-meta">
+      <time datetime="2019-04-24 17:04" class="post-meta__date date">24 Apr 2019</time>
+      
+    </div>
+    <h1 class="post-title">Vulnhub: Mr Robot - Walkthrough</h1>
+  </header>
+
+  <section class="post">
+    <p>This might officially be the first box that i’ve ever attempted. I was a total pleb at the time and it took me hella long to figure it all out. In the end it was all worth it :)</p>
+
+<h2>Description from author</h2>
+<p>Based on the show, Mr. Robot.
+This VM has three keys hidden in different locations. Your goal is to find all three. Each key is progressively difficult to find.
+The VM isn’t too difficult. There isn’t any advanced exploitation or reverse engineering. The level is considered beginner-intermediate.</p>
+
+<h2>Information Gathering</h2>
+<p>Let’s start with a simple port scan.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir scans
+nmap -sC -Pn -sV -oA scans/nmap_initial 10.0.2.4
+</code></pre></div></div>
+
+<p><img src="/assets/1/1.png" alt="" /></p>
+
+<p>Nothing too interesting, just a webserver running on the background and ssh. Let’s run Nikto in the background when we’re going to manually enumerate the web application.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nikto -h 10.0.2.4 -o scans/nikto.txt
+</code></pre></div></div>
+
+<p>Searched for common files and folders and found something interesting in /robots.txt!</p>
+
+<p><img src="/assets/1/2.png" alt="" /></p>
+
+<p>Great, the 1st out of 3 keys has been found. We also found an interesting .dic file. I downloaded them with wget. Going through the .dic file i found out that there were alot of duplicates, so i decided to sort the list and save it for later use.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat fsocity.dic| sort -u | uniq &gt; uniq_fsocity.dic
+</code></pre></div></div>
+
+<p>In the meantime our Nikto scan hs finished, let’s take a look at the results.</p>
+
+<p><img src="/assets/1/3.png" alt="" /></p>
+
+<p>WordPress is running in the background. The first thing i do when i know WordPress is installed is run wpscan but nothing too interesting came up. It wasn’t able to enumerate users either.</p>
+
+<p>Luckily for us, we know we can bruteforce user and password in a HTTP form with Hydra. Here is the POST request made when we try to login in /wp-login.php</p>
+
+<p><img src="/assets/1/4.png" alt="" /></p>
+
+<p>In the POST request 2 parameters are being used; log and pwd. Let’s run Hydra to figure out the username and password!</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hydra -vV -L uniq_fsocity.dic -p jiebs 10.0.2.4 http-post-form '/wp-login.php:log=^USER^&amp;pwd=^PASS^&amp;wp-submit=Log+In:F=Invalid username'
+</code></pre></div></div>
+
+<p>After abit of waiting we get the username.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[80][http-post-form] host: 10.0.2.4 login: elliot password: jiebs
+</code></pre></div></div>
+
+<p>Let’s try and grab the password with the same .dic file now.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hydra -vV -l elliot -P uniq_fsocity.dic 10.0.2.4 http-post-form '/wp-login.php:log=^USER^&amp;pwd=^PASS^&amp;wp-submit=Log+In:F=is incorrect'
+</code></pre></div></div>
+
+<p>Again after a bit of waiting we get the password.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[80][http-post-form] host: 10.0.2.4 login: elliot password: ER28-0652
+</code></pre></div></div>
+
+<p>Great, we have the username and password. Let’s log in and start the exploitation part!</p>
+
+<h2>Exploitation</h2>
+<p>After some poking around in the wp admin panel i figured i should try and upload a reverse shell. I got mine from pentestmonkeys, make sure you change the ip and port. Go to Appearance &gt; Editor &gt; 404 Template (404.php) &gt; paste the .php script &gt; click Upload.</p>
+
+<p><img src="/assets/1/5.png" alt="" /></p>
+
+<p>Let’s make sure we’re listening to the port.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nc -lvp 1234
+</code></pre></div></div>
+
+<p>Once you’re listening to the port lets get our reverse shell going.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl http://10.0.2.4/404.php
+</code></pre></div></div>
+
+<p><img src="/assets/1/6.png" alt="" /></p>
+
+<p>Great, our reverse shell is running. Let’s quickly spawn a TTY shell and start snooping around!</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python -c 'import pty; pty.spawn("/bin/sh")'
+</code></pre></div></div>
+
+<p>After searching around i found an interesting directory(/home/robot) with the 2nd key!</p>
+
+<p><img src="/assets/1/7.png" alt="" /></p>
+
+<p>I tried to cat the 2nd key, however we get permission denied. Luckily we noticed the password.raw-md5 file which sounds really interesting!</p>
+
+<p><img src="/assets/1/8.png" alt="" /></p>
+
+<p>Looks like a password hash for the robot user! I went online and cracked the hash, result: “abcdefghijklmnopqrstuvwxyz”. Let’s go ahead and switch to the robot user.</p>
+
+<p><img src="/assets/1/9.png" alt="" /></p>
+
+<p>Let’s see if we can cat the 2nd key now that we’re on a low privileged user.</p>
+
+<p><img src="/assets/1/10.png" alt="" /></p>
+
+<p>Great, now lets move and get root!</p>
+
+<h2>Privilege escalation</h2>
+<p>After going through a bunch of directories and files looking for hints, i started looking at binaries with the SUID bit set.</p>
+
+<p><img src="/assets/1/11.png" alt="" /></p>
+
+<p>We can run nmap as root since it’s SUID bit is set. Let’s check out the version. In older versions of nmap you are able to run it in interactive mode and escape to shell. Since the SUID bit is set, we’ll be able to escape to ‘root’ shell.</p>
+
+<p><img src="/assets/1/12.png" alt="" /></p>
+
+<p>Let’s check out the root directory for the last flag.</p>
+
+<p><img src="/assets/1/13.png" alt="" /></p>
+
+<p>Thanks for reading and happy hacking!</p>
+
+  </section>
+  
+</article>
+
+
+
+      </div>
+
+      <footer class="footer">
+  <span class="footer__copyright">&copy; 2020 Jiebs. All rights reserved.</span>
+</footer>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript" src="/js/main.js?1578336926736764985"></script>
+
+
+    </div>
+  </body>
+</html>
