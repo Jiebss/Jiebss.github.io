@@ -94,7 +94,7 @@ Let's continue and find the user and root flag. When going through the user fold
 
 ![](/assets/3/9.png)
 
-h2>Getting root.txt</h2>
+<h2>Getting root.txt</h2>
 Let's go to the root directory now for root.txt file.
 
 ![](/assets/3/10.png)
