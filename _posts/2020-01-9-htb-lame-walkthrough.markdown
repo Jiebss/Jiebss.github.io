@@ -15,13 +15,13 @@ mkdir scans
 nmap -sV -sC -oA scans/nmapinitial 10.10.10.3
 ```
 
--sC for defaults cripts
--sV for version enumeration
--oA for output all formats
+-sC for default scripts, 
+-sV for version enumeration, 
+-oA for output all formats.
 
 ![](/assets/3/2.png)
 
-Couple of interesting results.
+Couple of interesting results:
 
 - FTP allows anonymous login but when loggin in there wasn't any useful information.
 - OpenSSH version is not vulnerable.
@@ -30,7 +30,7 @@ Couple of interesting results.
 I ran a searchsploit on the samba version.
 
 ```
-searchsploit samna 3.0.20
+searchsploit samba 3.0.20
 ```
 
 ![](/assets/3/3.png)
@@ -90,9 +90,7 @@ python -c 'import pty; pty.spawn("/bin/sh")'
 ```
 
 <h2>Getting user.txt</h2>
-Let's continue and find the user and root flag.
-
-When going through the user folders i found the user.txt file in /home/makis.
+Let's continue and find the user and root flag. When going through the user folders i found the user.txt file in /home/makis.
 
 ![](/assets/3/9.png)
 
