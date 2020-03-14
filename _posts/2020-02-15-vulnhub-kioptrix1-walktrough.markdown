@@ -3,9 +3,9 @@ title:  "Vulnhub: Kioptrix 1 — Walkthrough"
 date:   2020-02-15 15:30:33
 ---
 
-![](/assets/4/1.png)
-
 I’ve set a decent amount of goals for myself to achieve, one of those is OSCP eventually. Overtime i’ve met some amazing people who actually recommended me doing the Kioptrix serie of vulnerable machines since they’re closely related to what the OSCP exam will be like. With that being said, i decided to give it a shot!
+
+![](/assets/4/1.png)
 
 <h2>Description</h2>
 This Kioptrix VM Image are easy challenges. The object of the game is to acquire root access via any means possible (except actually hacking the VM server or player). The purpose of these games are to learn the basic tools and techniques in vulnerability assessment and exploitation. There are more ways then one to successfully complete the challenges.
@@ -21,7 +21,7 @@ nmap -sC -sV -oA scans/nmapinitial kioptrix1.vh
 
 ![](/assets/4/2.png)
 
-When going through our nmap scan we can see that there are a bunch of interesting ports. I noticed the apache version, which is seriously outdated and mod_ssl running on port 443. I decided to take a look into that and found the OpenF**k exploit, which can be found by click [here](https://github.com/heltonWernik/OpenLuck)
+When going through our nmap scan we can see that there are a bunch of interesting ports. I noticed the apache version, which is seriously outdated and mod_ssl running on port 443. I decided to take a look into that and found the OpenF**k exploit, which can be found by click [here](https://github.com/heltonWernik/OpenLuck).
 
 Great, let’s move onto exploitation!
 
